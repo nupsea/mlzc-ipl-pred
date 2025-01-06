@@ -52,7 +52,7 @@ coverage.xml
 # Jupyter Notebook
 .ipynb_checkpoints
 # Keep notebooks clean of outputs before committing
-*.ipynb
+#*.ipynb
 
 # Pytest
 pytest_cache/
