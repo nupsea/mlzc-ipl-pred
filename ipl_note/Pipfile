@@ -9,7 +9,7 @@ pandas = "*"
 matplotlib = "*"
 seaborn = "*"
 tensorflow = "*"
-
+scikit-learn = "*"
 
 [dev-packages]
 jupyterlab = "*"
