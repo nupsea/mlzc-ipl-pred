@@ -9,10 +9,14 @@ pandas = "*"
 matplotlib = "*"
 seaborn = "*"
 tensorflow = "*"
-scikit-learn = "*"
+category-encoders = "==2.6.4"
+scikit-learn = "==1.5.2"
+tqdm = "*"
+xgboost = "*"
 
 [dev-packages]
 jupyterlab = "*"
+black = "*"
 
 [requires]
 python_version = "3.11"
