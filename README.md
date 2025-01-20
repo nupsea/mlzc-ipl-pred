@@ -121,6 +121,11 @@ This script sends a JSON payload to http://localhost:9696/predict and prints the
 * Production Considerations: For production usage, ensure robust logging, error handling, and possibly a database or queue for handling real-time predictions.
 
 
+### Acknowledgements
+
+The dataset used for this project is sourced from Kaggle:
+https://www.kaggle.com/datasets/patrickb1912/ipl-complete-dataset-20082020
+
 ### Contact / Contributions
 Feel free to fork this repository or submit pull requests with improvements, bug fixes, or extended features. If you have questions, you can open an issue.
 
