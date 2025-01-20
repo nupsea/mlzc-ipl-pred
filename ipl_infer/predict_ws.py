@@ -2,6 +2,11 @@ import pickle
 import os
 import pandas as pd
 
+from flask import Flask, request, jsonify
+
+
+app = Flask("IPLChasePredictionService")
+
 
 def load():
     version = os.getenv("MODEL_VERSION", "v1")
@@ -63,8 +68,10 @@ def validate_inputs(data):
         exit()
 
 
-def predict(input):
+@app.route("/chase", methods=["POST"])
+def predict():
 
+    input = request.get_json()
     validate_inputs(input)
 
     target_enc, pipeline = load()
@@ -73,23 +80,13 @@ def predict(input):
     X = target_enc.transform(df_t)
     y_pred = pipeline.predict_proba(X)[:, 1][0]
 
-    print(
-        f"Chasing team '{str(input['batting_team']).upper()}' has a Predicted Win probability of: {y_pred * 100:.2f}% "
-    )
+    response = {
+        "chasing_team": str(input['batting_team']).upper(),
+        "win_probability": y_pred
+    }
+    return jsonify(response)
+    
 
 
 if __name__ == "__main__":
-    c = {
-        "season": "2025",
-        "match_type": "league",
-        "batting_team": "gt",
-        "toss_winner": "mi",
-        "city": "mumbai",
-        "target_runs": 200,
-        "current_score": 180,
-        "wickets_down": 5,
-        "balls_remaining": 24,
-        "runs_last_12_balls": 10,
-        "wickets_last_12_balls": 2,
-    }
-    predict(c)
+    app.run(debug=True, host="0.0.0.0", port=9696)

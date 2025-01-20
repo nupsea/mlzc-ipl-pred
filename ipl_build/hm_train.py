@@ -22,7 +22,7 @@ import pickle
 import os
 
 version = os.getenv("MODEL_VERSION", "v1")
-model_dir = os.getenv("MODEL_DIR", "../MODEL")
+model_dir = os.getenv("MODEL_DIR", "../ipl_infer/MODEL")
 
 MODEL_FILE = os.path.join(model_dir, f"ipl_chase_pred_{version}.bin")
 
@@ -51,8 +51,8 @@ team_map = {
 
 def prep_data():
     print(f"Reading matches and deliveries dataset ..")
-    matches_df = pd.read_csv('../DATA/matches.csv')
-    deliveries_df = pd.read_csv('../DATA/deliveries.csv')
+    matches_df = pd.read_csv('DATA/matches.csv')
+    deliveries_df = pd.read_csv('DATA/deliveries.csv')
 
     # Interested only in second innings for determining successful chase.
     second_innings = deliveries_df[deliveries_df.inning == 2]
