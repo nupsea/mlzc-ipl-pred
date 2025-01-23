@@ -57,6 +57,18 @@ This project analyzes **IPL (Indian Premier League)** cricket match data and bui
 
 Below is a step-by-step guide to replicating the environment and running the pipeline.
 
+
+### 0. Prerequisites
+
+To set up, train, deploy, and test this project, you will need the following:
+
+- **Python 3.11**  
+- **Pipenv** (or an equivalent virtual environment manager)
+- **Docker**
+- **Kind** (for a local Kubernetes cluster)
+- **kubectl** (Kubernetes CLI)
+
+
 ### 1. Train the Model (Optional)
 
 Enter the `ipl_build` folder, install dependencies with `Pipenv` and activate the virtual environment to train the model.
@@ -97,12 +109,13 @@ You should see output resembling:
 Build the Docker image and run the container, exposing it on port 9696:
 
 ```
-(ipl_infer) docker build -t anse/ipl-win-pred .
+(ipl_infer) docker build -t anse/ipl-chase-pred .
 
-(ipl_infer) docker run -it --rm -p 9696:9696 anse/ipl-win-pred
+(ipl_infer) docker run -it --rm -p 9696:9696 anse/ipl-chase-pred
 ```
 
-Test the service from a separate terminal:
+<i> <b>Test</b> the service from a separate terminal: </i>
+
 ```
 # Still in ipl_infer, open a new shell
 pipenv shell
@@ -112,6 +125,39 @@ This script sends a JSON payload to http://localhost:9696/predict and prints the
 > Accessing IPLPredictionService Model Endpoint
 {"chasing_team":"RCB","win_probability":0.6951505192319618}
 
+
+### 4. Kubernetes Deployed Service
+
+
+```
+# Ensure you are in kind cluster context 
+kind create cluster                         # first time only
+kubectl cluster-info --context kind-kind
+
+cd kube
+kubectl apply -f model-deployment.yaml
+kubectl apply -f model-service.yaml
+
+kubectl port-foward service/chase-pred-svc 8080:80  # Port-forward to test 
+
+```
+
+<i> <b>Test</b> the service from a separate terminal: </i>
+
+
+```
+cd ../ipl_infer
+pipenv shell
+(ipl_infer) python k_client.py
+```
+
+This script now sends a JSON payload to http://localhost:8080/predict and prints the response:
+
+```
+>  Accessing Kube Deployed IPLPredictionService 
+{"chasing_team":"RCB","win_probability":0.6951505192319617}
+
+```
 
 ### Notes & Disclaimers
 

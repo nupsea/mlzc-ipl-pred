@@ -9,10 +9,10 @@ scikit-learn = "==1.5.2"
 category-encoders = "==2.6.4"
 flask = "==3.0.3"
 gunicorn = "==23.0.0"
+requests = "*"
 
 [dev-packages]
 black = "*"
-requests = "*"
 
 [requires]
 python_version = "3.11"
