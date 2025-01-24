@@ -159,6 +159,11 @@ This script now sends a JSON payload to http://localhost:8080/predict and prints
 
 ```
 
+### 5. AWS Service using EKS
+
+Refer to [Cloud Deployment](./kube/eks/cloud-deployment.md)
+
+
 ### Notes & Disclaimers
 
 * Data Validations: The prediction code checks for invalid inputs (e.g., negative scores, wickets > 10). If the input is already a decided match (chasing team surpassing target or 10 wickets down), it outputs a direct result.

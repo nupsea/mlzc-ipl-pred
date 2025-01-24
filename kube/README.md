@@ -7,7 +7,7 @@
 kind create cluster                         # first time only
 kubectl cluster-info --context kind-kind
 
-cd kube
+cd kube/local
 kubectl apply -f model-deployment.yaml
 kubectl apply -f model-service.yaml
 

@@ -1,0 +1,32 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: chase-pred
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: chase-pred
+  template:
+    metadata:
+      labels:
+        app: chase-pred
+    spec:
+      containers:
+      - name: chase-pred
+        image: <account-id>.dkr.ecr.ap-southeast-2.amazonaws.com/anse/ipl-chase-pred
+        imagePullPolicy: Always
+        resources:
+          requests:
+            memory: "256Mi"
+            cpu: "250m"
+          limits:
+            memory: "512Mi"
+            cpu: "500m"
+        ports:
+        - containerPort: 9696
+        env:
+          - name: MODEL_VERSION
+            value: "v1"
+          - name: MODEL_DIR
+            value: "/app/MODEL"
