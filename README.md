@@ -5,7 +5,7 @@ This project analyzes **IPL (Indian Premier League)** cricket match data and bui
 - **EDA (Exploratory Data Analysis) and Feature Engineering**  
 - **Model Training & Evaluation**  
 - **Realistic Sanity Checks** (e.g., no negative scores, no more than 10 wickets)  
-- **Inference via Python Script or Dockerized Flask Service**  
+- **Inference via Python Script/Dockerized Flask Service/Local or Cloud K8s Deployed Service**  
 
 ## Directory Structure
 
@@ -22,15 +22,28 @@ This project analyzes **IPL (Indian Premier League)** cricket match data and bui
 │   ├── Pipfile.lock
 │   ├── half_match.ipynb
 │   └── hm_train.py
-└── ipl_infer
-    ├── Dockerfile
-    ├── MODEL
-    │   └── ipl_chase_pred_v1.bin
-    ├── Pipfile
-    ├── Pipfile.lock
-    ├── client.py
-    ├── predict.py
-    └── predict_ws.py
+├── ipl_infer
+│   ├── Dockerfile
+│   ├── MODEL
+│   │   └── ipl_chase_pred_v1.bin
+│   ├── Pipfile
+│   ├── Pipfile.lock
+│   ├── client.py
+│   ├── eks_client.py
+│   ├── k_client.py
+│   ├── predict.py
+│   └── predict_ws.py
+└── kube
+    ├── eks
+    │   ├── chase-deployment.yaml
+    │   ├── chase-service.yaml
+    │   ├── cloud-deployment.md
+    │   ├── image-1.png
+    │   └── image.png
+    └── local
+        ├── README.md
+        ├── model-deployment.yaml
+        └── model-service.yaml
 
 ```
 
@@ -67,6 +80,7 @@ To set up, train, deploy, and test this project, you will need the following:
 - **Docker**
 - **Kind** (for a local Kubernetes cluster)
 - **kubectl** (Kubernetes CLI)
+- **AWS Cloud** (Optional)(AWS account for deploying onto AWS cloud)
 
 
 ### 1. Train the Model (Optional)
@@ -160,6 +174,8 @@ This script now sends a JSON payload to http://localhost:8080/predict and prints
 ```
 
 ### 5. AWS Service using EKS
+
+The below link provides you an overview of how this application was deployed onto AWS EKS using a Docker image hosted on ECR and its subsequenting testing.
 
 Refer to [Cloud Deployment](./kube/eks/cloud-deployment.md)
 
