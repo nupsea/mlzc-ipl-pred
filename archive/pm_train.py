@@ -243,13 +243,20 @@ def pre_process(df):
         "elo_away_after",
         "elo_home_before",
         "elo_away_before",
-        'home_team_avg_runs_scored_last_7', 'away_team_avg_runs_scored_last_7',
-        'home_team_avg_runs_conceded_last_7', 'away_team_avg_runs_conceded_last_7',
-        'home_team_avg_run_rate_last_7', 'away_team_avg_run_rate_last_7',
-        'home_team_win_ratio_last_7', 'away_team_win_ratio_last_7',
-        'home_team_avg_bowl_econ_last_7', 'away_team_avg_bowl_econ_last_7',
-        'home_team_avg_boundaries_scored_last_7', 'away_team_avg_boundaries_scored_last_7',
-        'home_team_avg_boundaries_conceded_last_7', 'away_team_avg_boundaries_conceded_last_7'
+        "home_team_avg_runs_scored_last_7",
+        "away_team_avg_runs_scored_last_7",
+        "home_team_avg_runs_conceded_last_7",
+        "away_team_avg_runs_conceded_last_7",
+        "home_team_avg_run_rate_last_7",
+        "away_team_avg_run_rate_last_7",
+        "home_team_win_ratio_last_7",
+        "away_team_win_ratio_last_7",
+        "home_team_avg_bowl_econ_last_7",
+        "away_team_avg_bowl_econ_last_7",
+        "home_team_avg_boundaries_scored_last_7",
+        "away_team_avg_boundaries_scored_last_7",
+        "home_team_avg_boundaries_conceded_last_7",
+        "away_team_avg_boundaries_conceded_last_7",
     ]
     proc_df.drop(columns=other_cols_to_remove, axis=1, inplace=True)
 
@@ -257,7 +264,7 @@ def pre_process(df):
     cat_cols_to_remove = [
         "short_name",
         "end_date",
-        #"start_date",
+        # "start_date",
         "home_playx1",
         "away_playx1",
         "away_key_batsman",
@@ -266,22 +273,19 @@ def pre_process(df):
     proc_df.drop(columns=cat_cols_to_remove, axis=1, inplace=True)
     print(f" ## Data Prep complete!")
 
-    proc_df['toss_won'] = proc_df.toss_won.fillna('')
-    proc_df['decision'] = proc_df.decision.fillna('')
-    proc_df['day_night_play'] = proc_df.day_night_play.fillna('')
-    proc_df['season_match'] = proc_df.season_match.fillna('')
+    proc_df["toss_won"] = proc_df.toss_won.fillna("")
+    proc_df["decision"] = proc_df.decision.fillna("")
+    proc_df["day_night_play"] = proc_df.day_night_play.fillna("")
+    proc_df["season_match"] = proc_df.season_match.fillna("")
 
-    for c in ['season', 'h2h_home_win_ratio_last_7', 'h2h_avg_runs_last_7']:
+    for c in ["season", "h2h_home_win_ratio_last_7", "h2h_avg_runs_last_7"]:
         mean_c = proc_df[c].mean()
         proc_df[c] = proc_df[c].fillna(mean_c)
 
-    cat_cols = [col  for col in proc_df.columns if proc_df[col].dtype == object]
+    cat_cols = [col for col in proc_df.columns if proc_df[col].dtype == object]
     for col in cat_cols:
         proc_df[col] = (
-            proc_df[col]
-            .str.lower()
-            .str.strip()
-            .str.replace(r'\s+', '_', regex=True)
+            proc_df[col].str.lower().str.strip().str.replace(r"\s+", "_", regex=True)
         )
 
     return proc_df
@@ -295,19 +299,27 @@ if __name__ == "__main__":
     pre_df = pre_process(raw_df)
 
     # Since it needs to be a time aware split, shuffle=False .. which results in past matches only for training and future matches for predicting.
-    processed_df = pre_df.sort_values('start_date')  # Ensure time order
+    processed_df = pre_df.sort_values("start_date")  # Ensure time order
 
-    df_full_train, df_test = train_test_split(processed_df, test_size=.2, shuffle=False, random_state=1)
-    df_train, df_val = train_test_split(df_full_train, test_size=.25, shuffle=False, random_state=1)
-    print(f"Length of df_train:{len(df_train)},  df_val:{len(df_val)},  df_test:{len(df_test)}")
+    df_full_train, df_test = train_test_split(
+        processed_df, test_size=0.2, shuffle=False, random_state=1
+    )
+    df_train, df_val = train_test_split(
+        df_full_train, test_size=0.25, shuffle=False, random_state=1
+    )
+    print(
+        f"Length of df_train:{len(df_train)},  df_val:{len(df_val)},  df_test:{len(df_test)}"
+    )
 
-    y_train = df_train.pop('output')
-    y_val = df_val.pop('output')
-    y_test = df_test.pop('output')
-    y_full_train = df_full_train.pop('output')
+    y_train = df_train.pop("output")
+    y_val = df_val.pop("output")
+    y_test = df_test.pop("output")
+    y_full_train = df_full_train.pop("output")
 
-    cat_cols = [col  for col in processed_df.columns if processed_df[col].dtype == object]
-    cat_cols.extend(['venue_id',  'season', 'toss_won']) 
+    cat_cols = [
+        col for col in processed_df.columns if processed_df[col].dtype == object
+    ]
+    cat_cols.extend(["venue_id", "season", "toss_won"])
     num_cols = list(set(df_train.columns) - set(cat_cols))
 
     categorical_features_small = ["day_night_play", "decision"]
@@ -321,35 +333,35 @@ if __name__ == "__main__":
     df_train = df_train_encoded.reset_index(drop=True)
     df_val = df_val_encoded.reset_index(drop=True)
 
-
     # Create Pipelines for Numerical and Categorical Features
 
-    numerical_transformer = Pipeline(steps=[
-        ('imputer', SimpleImputer(strategy='mean')),    # Fill missing values with mean
-        ('scaler', StandardScaler())                    # Standardize numerical values
-    ])
-
-    # Categorical Transformer for One-Hot Encoding (for low cardinality categorical features)
-    categorical_transformer = Pipeline(steps=[
-        ('onehot', OneHotEncoder(handle_unknown='ignore'))
-    ])
-
-        # Column Transformer to apply transformations to different features
-    preprocessor = ColumnTransformer(
-        transformers=[
-            ('num', numerical_transformer, num_cols),
-            ('cat', categorical_transformer, categorical_features_small)
-        ],
-        remainder='drop'  # Drop any columns not specified
+    numerical_transformer = Pipeline(
+        steps=[
+            (
+                "imputer",
+                SimpleImputer(strategy="mean"),
+            ),  # Fill missing values with mean
+            ("scaler", StandardScaler()),  # Standardize numerical values
+        ]
     )
 
+    # Categorical Transformer for One-Hot Encoding (for low cardinality categorical features)
+    categorical_transformer = Pipeline(
+        steps=[("onehot", OneHotEncoder(handle_unknown="ignore"))]
+    )
+
+    # Column Transformer to apply transformations to different features
+    preprocessor = ColumnTransformer(
+        transformers=[
+            ("num", numerical_transformer, num_cols),
+            ("cat", categorical_transformer, categorical_features_small),
+        ],
+        remainder="drop",  # Drop any columns not specified
+    )
 
     # Final model that has reasonable acc/auc for T20 IPL data.
     model = XGBClassifier(
-        n_estimators=30,
-        learning_rate=.01,
-        random_state=42,
-        eval_metric='logloss'
+        n_estimators=30, learning_rate=0.01, random_state=42, eval_metric="logloss"
     )
 
     fold_aucs = []
@@ -358,17 +370,21 @@ if __name__ == "__main__":
 
     for train_idx, val_idx in tscv.split(df_full_train):
         X_train, X_val = df_full_train.iloc[train_idx], df_full_train.iloc[val_idx]
-        y_train_fold, y_val_fold = y_full_train.iloc[train_idx], y_full_train.iloc[val_idx]
+        y_train_fold, y_val_fold = (
+            y_full_train.iloc[train_idx],
+            y_full_train.iloc[val_idx],
+        )
 
         # Transform with target encoding and preprocessor
         X_train_enc = target_enc.fit_transform(X_train, y_train_fold)
-        X_val_enc   = target_enc.transform(X_val)
-        
+        X_val_enc = target_enc.transform(X_val)
 
-        pipeline = Pipeline([
-            ('preprocessor', preprocessor),  
-            ('model', model),
-        ])
+        pipeline = Pipeline(
+            [
+                ("preprocessor", preprocessor),
+                ("model", model),
+            ]
+        )
         pipeline.fit(X_train_enc, y_train_fold)
 
         y_pred_fold = pipeline.predict(X_val_enc)
@@ -377,12 +393,10 @@ if __name__ == "__main__":
 
     print(f"Accuracy={np.mean(fold_accs):.3f}, ROC AUC={np.mean(fold_aucs):.3f}")
 
-
     y_pred = pipeline.predict(df_test)
     acc = accuracy_score(y_test, y_pred)
     auc = roc_auc_score(y_test, y_pred)
     print(f"Model {version} trained with Accuracy={acc:.3f}, ROC AUC={auc:.3f}")
-
 
     # Save Model
 
@@ -392,7 +406,7 @@ if __name__ == "__main__":
     print(f"Output Model saved to : {MODEL_FILE}")
 
 # NE=25|LR=0.01|MD=5|Subs=0.6|CS=0.8 Accuracy=0.555, ROC AUC=0.523
-    # NE=25|LR=0.01|MD=7|Subs=0.6|CS=0.8 Accuracy=0.556, ROC AUC=0.526
+# NE=25|LR=0.01|MD=7|Subs=0.6|CS=0.8 Accuracy=0.556, ROC AUC=0.526
 # NE=30|LR=0.01|MD=4|Subs=0.6|CS=0.8 Accuracy=0.552, ROC AUC=0.522
 # NE=30|LR=0.01|MD=5|Subs=0.6|CS=0.8 Accuracy=0.553, ROC AUC=0.525
 # NE=30|LR=0.01|MD=7|Subs=0.6|CS=0.7 Accuracy=0.552, ROC AUC=0.521

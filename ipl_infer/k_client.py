@@ -18,9 +18,6 @@ print(" Accessing Kube Deployed IPLPredictionService ")
 
 host = "localhost:8080"
 
-res = requests.post(
-    url=f'http://{host}/chase',
-    json=match_state
-)
+res = requests.post(url=f"http://{host}/chase", json=match_state)
 
 print(res.text)

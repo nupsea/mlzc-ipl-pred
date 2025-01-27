@@ -81,11 +81,10 @@ def predict():
     y_pred = pipeline.predict_proba(X)[:, 1][0]
 
     response = {
-        "chasing_team": str(input['batting_team']).upper(),
-        "win_probability": y_pred
+        "chasing_team": str(input["batting_team"]).upper(),
+        "win_probability": y_pred,
     }
     return jsonify(response)
-    
 
 
 if __name__ == "__main__":

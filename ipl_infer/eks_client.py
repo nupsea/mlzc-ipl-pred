@@ -19,9 +19,6 @@ print(" Accessing AWS EKS Deployed IPLPredictionService ")
 # Modified from the actual host.
 host = "x-y-z.ap-southeast-2.elb.amazonaws.com"
 
-res = requests.post(
-    url=f'http://{host}/chase',
-    json=match_state
-)
+res = requests.post(url=f"http://{host}/chase", json=match_state)
 
 print(res.text)

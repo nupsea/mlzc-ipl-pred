@@ -1,4 +1,3 @@
-
 import streamlit as st
 import numpy as np
 import pandas as pd
@@ -31,32 +30,30 @@ team_map = {
     "Lucknow Super Giants": "SG",
     "Gujarat Titans": "GT",
     "Gujarat Lions": "GT",
-    "Kochi Tuskers Kerala": "KTK"
+    "Kochi Tuskers Kerala": "KTK",
 }
 
 match_type = st.selectbox(
-    'Match Type?',
-     ('league', 'semi-final', 'final'))
-
-chasing_team_full = st.selectbox(
-    'Chasing team',
-    list(team_map.keys())
+    "Match Type?", ("league", "eliminator", "qualifier_1", "qualifier_2", "final")
 )
+
+chasing_team_full = st.selectbox("Chasing team", list(sorted(team_map.keys())))
 chasing_team = team_map.get(chasing_team_full).lower()
 
-toss_won_team_full = st.selectbox(
-    'Toss Winning team',
-    list(team_map.keys())
-)
+toss_won_team_full = st.selectbox("Toss Winning team", list(sorted(team_map.keys())))
 toss_won_team = team_map.get(toss_won_team_full).lower()
 
 city = st.text_input("City:", key="city")
 target_runs = st.number_input("Target Runs:", key="target_runs", step=1)
 current_score = st.number_input("Current Score:", key="current_score", step=1)
-wickets_down = st.number_input("Wickets down:", key="wickets_down",step=1)
-balls_remaining = st.number_input("Balls remaining:", key="balls_remaining",step=1)
-runs_last_12_balls = st.number_input("Runs scored last 2 overs:", key="runs_last_12_balls",step=1)
-wickets_last_12_balls = st.number_input("Wickets lost last 2 overs:", key="wickets_last_12_balls",step=1)
+wickets_down = st.number_input("Wickets down:", key="wickets_down", step=1)
+balls_remaining = st.number_input("Balls remaining:", key="balls_remaining", step=1)
+runs_last_12_balls = st.number_input(
+    "Runs scored last 2 overs:", key="runs_last_12_balls", step=1
+)
+wickets_last_12_balls = st.number_input(
+    "Wickets lost last 2 overs:", key="wickets_last_12_balls", step=1
+)
 
 match_state = {
     "season": season,
@@ -69,13 +66,13 @@ match_state = {
     "wickets_down": wickets_down,
     "balls_remaining": int(st.session_state.balls_remaining),
     "runs_last_12_balls": runs_last_12_balls,
-    "wickets_last_12_balls": wickets_last_12_balls
+    "wickets_last_12_balls": wickets_last_12_balls,
 }
 
 
 def validate_inputs(data) -> bool:
     errors = []
-    
+
     if data["current_score"] < 0:
         errors.append("current_score cannot be negative.")
     if not (0 <= data["wickets_down"] <= 10):
@@ -92,16 +89,17 @@ def validate_inputs(data) -> bool:
         errors.append("runs_last_12_balls cannot be negative.")
     if data["runs_last_12_balls"] > data["current_score"]:
         errors.append("runs_last_12_balls cannot exceed current_score.")
-    if data["current_score"] >= data["target_runs"]:
-        errors.append(f"{data['batting_team']} has already won!")
+    if data["current_score"] >= data["target_runs"] and data["current_score"] != 0:
+        errors.append(f"{chasing_team} has already won!")
     elif data["wickets_down"] == 10:
-        errors.append(f"{data['batting_team']} has already lost (all out)!")
+        errors.append(f"{chasing_team} has already lost (all out)!")
 
     if errors:
         for e in errors:
             st.error(e)
         return False
     return True
+
 
 valid = validate_inputs(match_state)
 
@@ -111,23 +109,26 @@ predict_clicked = st.button("Predict", disabled=not valid)
 if predict_clicked:
 
     host = "localhost:9696"
-    res = requests.post(
-        url=f'http://{host}/chase',
-        json=match_state
-    )
+    res = requests.post(url=f"http://{host}/chase", json=match_state)
 
     response = res.json()
     st.write(response)
 
-
     prob = float(response["win_probability"])
 
-    labels = ['Chasing Team', 'Defending Team']
-    sizes = [prob * 100, (1 - prob) * 100] 
+    labels = ["Chasing Team", "Defending Team"]
+    sizes = [prob * 100, (1 - prob) * 100]
     explode = (0.1, 0)
 
     fig1, ax1 = plt.subplots()
-    ax1.pie(sizes, explode=explode, labels=labels, autopct='%1.1f%%', shadow=True, startangle=90)
-    ax1.axis('equal')
+    ax1.pie(
+        sizes,
+        explode=explode,
+        labels=labels,
+        autopct="%1.1f%%",
+        shadow=True,
+        startangle=90,
+    )
+    ax1.axis("equal")
 
     st.pyplot(fig1)

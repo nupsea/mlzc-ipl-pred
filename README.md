@@ -74,14 +74,18 @@ Below is a step-by-step guide to replicating the environment and running the pip
 
 ### 0. Prerequisites
 
-To set up, train, deploy, and test this project, you will need the following:
-
+To only play with the model with a UI, you will need:
 - **Python 3.11**  
 - **Pipenv** (or an equivalent virtual environment manager)
+Go to [Play with App](#6-play-with-streamlit-ui)
+
+
+Besides, to train, deploy on local/cloud, and test this project, you will need the following:
+
 - **Docker**
 - **Kind** (for a local Kubernetes cluster)
 - **kubectl** (Kubernetes CLI)
-- **AWS Cloud** (Optional)(AWS account for deploying onto AWS cloud)
+- **AWS Cloud** (AWS account for deploying onto AWS cloud)
 
 
 ### 1. Train the Model (Optional)
@@ -194,12 +198,12 @@ pipenv install
 pipenv shell
 ```
 
-2. **Start** the model inference service (Flask, Docker, etc.) on port `9696`.
+2. **Start** the model inference service (Flask Web Service, Docker, etc.) on port `9696`.
 (Refer to any of the previous local ones.)
 ```
-(ipl_infer) docker run -it --rm -p 9696:9696 anse/ipl-chase-pred
+(ipl_infer) python predict_ws.py
 ```
-3. **Run** the Streamlit app:
+3. **Run** the Streamlit app (on another terminal)
 ```bash
 (ipl_infer) streamlit run app.py
 ```

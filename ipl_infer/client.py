@@ -18,9 +18,6 @@ print(" Accessing IPLPredictionService Model Endpoint ")
 
 host = "localhost:9696"
 
-res = requests.post(
-    url=f'http://{host}/chase',
-    json=match_state
-)
+res = requests.post(url=f"http://{host}/chase", json=match_state)
 
 print(res.text)
