@@ -77,10 +77,11 @@ Below is a step-by-step guide to replicating the environment and running the pip
 To only play with the model with a UI, you will need:
 - **Python 3.11**  
 - **Pipenv** (or an equivalent virtual environment manager)
+
 Go to [Play with App](#6-play-with-streamlit-ui)
 
 
-Besides, to train, deploy on local/cloud, and test this project, you will need the following:
+Besides, to explore deployment and operations, you will/may need the following:
 
 - **Docker**
 - **Kind** (for a local Kubernetes cluster)
