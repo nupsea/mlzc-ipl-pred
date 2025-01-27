@@ -40,3 +40,4 @@ kubectl describe pod <podname>  # debug for errors (port already in use.. )
 
 
 
+

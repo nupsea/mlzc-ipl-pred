@@ -63,3 +63,8 @@ pipenv shell
 ```
 
 ![Test on Cloud](image-1.png)
+
+### Cleanup
+```
+eksctl delete cluster --name ml-eks-cluster --region ap-southeast-2
+```

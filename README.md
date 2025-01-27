@@ -180,6 +180,33 @@ The below link provides you an overview of how this application was deployed ont
 Refer to [Cloud Deployment](./kube/eks/cloud-deployment.md)
 
 
+### 6. Play with Streamlit UI
+
+A simple **Streamlit** UI is provided to interactively input match context and get the predicted outcome for a chasing team in IPL T20. 
+
+### How to Run
+
+1. **Install dependencies** in ipl_infer through pipenv if not already done.
+```
+cd ipl_infer
+pipenv install
+pipenv shell
+```
+
+2. **Start** the model inference service (Flask, Docker, etc.) on port `9696`.
+(Refer to any of the previous local ones.)
+```
+(ipl_infer) docker run -it --rm -p 9696:9696 anse/ipl-chase-pred
+```
+3. **Run** the Streamlit app:
+```bash
+(ipl_infer) streamlit run app.py
+```
+
+4. Access the Streamlit UI in your browser at http://localhost:8501 . Fill in the necessary input params and hit on Predict button. 
+
+
+
 ### Notes & Disclaimers
 
 * Data Validations: The prediction code checks for invalid inputs (e.g., negative scores, wickets > 10). If the input is already a decided match (chasing team surpassing target or 10 wickets down), it outputs a direct result.
