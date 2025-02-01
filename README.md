@@ -1,11 +1,58 @@
 # mlzc-ipl-pred
 
-This project analyzes **IPL (Indian Premier League)** cricket match data and builds a model to predict the **win probability** of the chasing team **at any point** during the second innings (post half-game). The approach includes:
+
+This project (https://github.com/nupsea/mlzc-ipl-pred) analyzes **IPL (Indian Premier League)** cricket match data and builds a model to predict the **win probability** of the chasing team **at any point** during the second innings (post half-game). The approach includes:
 
 - **EDA (Exploratory Data Analysis) and Feature Engineering**  
 - **Model Training & Evaluation**  
 - **Realistic Sanity Checks** (e.g., no negative scores, no more than 10 wickets)  
-- **Inference via Python Script/Dockerized Flask Service/Local or Cloud K8s Deployed Service**  
+- **Inference via Python Script / Dockerized Flask Service / Kubernetes (Local or AWS EKS) / Streamlit UI**  
+
+---
+
+## 0. Quickstart: Play with Streamlit UI
+
+If you’d like to **quickly experiment** with the model via a web interface, follow these steps:
+
+### Prerequisites
+
+- **Python 3.11** (download/install from [python.org](https://www.python.org/downloads/))  
+- **Pipenv** (or an equivalent virtual environment manager)
+  ```bash
+  pip install --user pipenv
+  ```
+
+### Steps
+
+1. Clone this repository, open the `ipl_infer` directory.
+```bash
+git clone <this-repo>
+cd ipl_infer
+```
+
+2. Install dependencies and activate the virtual environment.
+```bash
+pipenv install
+pipenv shell
+```
+
+3. Start the model inference service.
+```
+(ipl_infer) python predict_ws.py
+```
+This runs a Flask service on port 9696.
+
+4. Open another terminal, get into the virtual environment and Run the Streamlit app:
+```bash
+pipenv shell 
+(ipl_infer) streamlit run app.py
+```
+
+5. Open http://localhost:8501 in your browser to use the UI.
+   Fill in match details (target score, current score, balls remaining, etc.) and click Predict.
+   The app will display a win probability for the chasing team.
+   
+---
 
 ## Directory Structure
 
@@ -51,7 +98,7 @@ This project analyzes **IPL (Indian Premier League)** cricket match data and bui
 ## Workflow Overview
 
 1. **Data & EDA**  
-   - In the `ipl_build` folder, you’ll find raw data (`deliveries.csv`, `matches.csv`).  
+   - In the `ipl_build/DATA` folder, you’ll find raw data (`deliveries.csv`, `matches.csv`).  
    - The Jupyter notebook `half_match.ipynb` shows how we explore the data, engineer features, and evaluate the model.  
 
 2. **Model Training**  
@@ -59,7 +106,7 @@ This project analyzes **IPL (Indian Premier League)** cricket match data and bui
    - The script saves the trained model and encoders as `ipl_chase_pred_v1.bin` in the `ipl_infer/MODEL` folder by default.
 
 3. **Inference**  
-   - You can make predictions either via a **standalone Python script** (`predict.py`) or a **Dockerized Flask web service** (`predict_ws.py`).
+   - You can make predictions either via a **standalone Python script** (`predict.py`), a **Dockerized Flask web service** (`predict_ws.py`) or making use of Kuberentes or AWS Services. 
 
 4. **Realistic Checks**  
    - The inference code includes **sanity checks** to ensure the input is valid (e.g., no negative current_score, wickets_down ≤ 10, etc.).  
@@ -69,20 +116,11 @@ This project analyzes **IPL (Indian Premier League)** cricket match data and bui
 
 ## Setup & Commands
 
-Below is a step-by-step guide to replicating the environment and running the pipeline.
+Below is a step-by-step guide to explore deployment and operations, you will/may need the following depending on what you intend to try. 
 
-
-### 0. Prerequisites
-
-To only play with the model with a UI, you will need:
-- **Python 3.11**  
-- **Pipenv** (or an equivalent virtual environment manager)
-
-Go to [Play with App](#6-play-with-streamlit-ui)
-
-
-Besides, to explore deployment and operations, you will/may need the following:
-  
+### Prerequisites
+- **Python 3.11**
+- **Pipenv**
 - **Docker**
 - **Kind** (for a local Kubernetes cluster)
 - **kubectl** (Kubernetes CLI)
@@ -92,6 +130,7 @@ Besides, to explore deployment and operations, you will/may need the following:
 ### 1. Train the Model (Optional)
 
 Enter the `ipl_build` folder, install dependencies with `Pipenv` and activate the virtual environment to train the model.
+(Explore using half_match.ipynb notebook and make changes in `hm_train.py` correspondingly to modify/optimize the model behaviour, else skip to Step 2.)
 
    ```bash
    cd ipl_build
@@ -184,32 +223,6 @@ This script now sends a JSON payload to http://localhost:8080/predict and prints
 The below link provides you an overview of how this application was deployed onto AWS EKS using a Docker image hosted on ECR and its subsequenting testing.
 
 Refer to [Cloud Deployment](./kube/eks/cloud-deployment.md)
-
-
-### 6. Play with Streamlit UI
-
-A simple **Streamlit** UI is provided to interactively input match context and get the predicted outcome for a chasing team in IPL T20. 
-
-### How to Run
-
-1. **Install dependencies** in ipl_infer through pipenv if not already done.
-```
-cd ipl_infer
-pipenv install
-pipenv shell
-```
-
-2. **Start** the model inference service (Flask Web Service, Docker, etc.) on port `9696`.
-(Refer to any of the previous local ones.)
-```
-(ipl_infer) python predict_ws.py
-```
-3. **Run** the Streamlit app (on another terminal)
-```bash
-(ipl_infer) streamlit run app.py
-```
-
-4. Access the Streamlit UI in your browser at http://localhost:8501 . Fill in the necessary input params and hit on Predict button. 
 
 
 
