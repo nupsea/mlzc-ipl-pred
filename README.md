@@ -1,7 +1,7 @@
 # mlzc-ipl-pred
 
 
-This project (https://github.com/nupsea/mlzc-ipl-pred) analyzes **IPL (Indian Premier League)** cricket match data and builds a model to predict the **win probability** of the chasing team **at any point** during the second innings (post half-game). The approach includes:
+This project ([mlzc-ipl-pred git repo](https://github.com/nupsea/mlzc-ipl-pred)) analyzes **IPL (Indian Premier League)** cricket match data and builds a model to predict the **win probability** of the chasing team **at any point** during the second innings (post half-game). The approach includes:
 
 - **EDA (Exploratory Data Analysis) and Feature Engineering**  
 - **Model Training & Evaluation**  
