@@ -236,8 +236,9 @@ Refer to [Cloud Deployment](./kube/eks/cloud-deployment.md)
 
 ### Acknowledgements
 
-The dataset used for this project is sourced from Kaggle:
+* The dataset used for this project is sourced from Kaggle:
 https://www.kaggle.com/datasets/patrickb1912/ipl-complete-dataset-20082020
+* This project was developed from the learnings of the course: https://github.com/DataTalksClub/machine-learning-zoomcamp
 
 ### Contact / Contributions
 Feel free to fork this repository or submit pull requests with improvements, bug fixes, or extended features. If you have questions, you can open an issue.
