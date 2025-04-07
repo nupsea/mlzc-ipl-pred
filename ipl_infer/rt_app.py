@@ -8,7 +8,7 @@ from streamlit_autorefresh import st_autorefresh
 st.write("Welcome to IPL T20 Live Prediction Dashboard")
 
 # Auto-refresh every 10 seconds (10,000 milliseconds)
-st_autorefresh(interval=10000, limit=100, key="live_refresh")
+st_autorefresh(interval=3000, limit=100, key="live_refresh")
 
 # Create and cache the Kafka consumer so it isn't recreated on every refresh
 @st.cache_resource
