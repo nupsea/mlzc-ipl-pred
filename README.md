@@ -197,7 +197,7 @@ cd kube
 kubectl apply -f model-deployment.yaml
 kubectl apply -f model-service.yaml
 
-kubectl port-foward service/chase-pred-svc 8080:80  # Port-forward to test 
+kubectl port-forward service/chase-pred-svc 8080:80  # Port-forward to test 
 
 ```
 
